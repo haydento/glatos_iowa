@@ -48,17 +48,16 @@ class: inverse, left, top
 
 - Multi-dimensional (space, time, depth, ...), difficult to summarize with static plots
 - Intuitive
-- Effective screening tool
 - Exploratory 
 
 # BUT...
 
 - Easy to misrepresent movement patterns by "cherry picking" fish
 - What next?  Animations are usually not the final analysis
-- Don't work well with many fish simultaneously
+- Difficult to tease out patterns in large number of fish
 
 .center[
-## Interpolation = made up data!
+## Interpolated positions = made up data!
 ]
 
 ---
@@ -66,13 +65,13 @@ class: inverse, left, top
 # Step for creating animations
 
 1. Sort observations- fish and time
-2. Bin timestamps
-3. Estimate position of each fish based on detections in each time bin (interpolate)
+2. Bin detection timestamps
+3. Estimate position of each fish in each time bin (interpolate)
 4. Plot all fish in each bin (frame)
 5. Combine frames into animation
 
 .center[
-&lt;iframe src="https://giphy.com/embed/xULW8hfIn8fmGCU8iA" width="400" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="https://giphy.com/gifs/supersimple-supersimplesongs-babyshark-xULW8hfIn8fmGCU8iA"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;iframe src="https://giphy.com/embed/xULW8hfIn8fmGCU8iA" width="500" frameBorder="0" class="giphy-embed" allowFullScreen&gt;&lt;/iframe&gt;&lt;p&gt;&lt;a href="https://giphy.com/gifs/supersimple-supersimplesongs-babyshark-xULW8hfIn8fmGCU8iA"&gt;&lt;/a&gt;&lt;/p&gt;
 ]
 
 ---
@@ -95,7 +94,7 @@ class: inverse, left, top
 
 # Linear or non-linear interpolation?
 ### -  Linear interpolation
- - fast and efficient
+ - fast
  - Consider whether linear will work for your needs 
   - Purpose of animation (exploration, presentation?)
 
@@ -103,7 +102,7 @@ class: inverse, left, top
 
 # Linear or non-linear interpolation?
 ### - Non-linear interpolation
- - requires spatial polygon shoreline
+ - requires spatial data
  - `gdistance` package used to find non-linear paths
  - Polygon shoreline transition layer - a raster of "costs" for moving between adjacent cells.
   - Land is "high" cost and water is "low" cost.  `gdistance` finds the lowest cost path between locations within cost matrix.
@@ -203,13 +202,14 @@ make_frames(pos[1:100,], animate = TRUE, out_dir = myDir, ani_name = "ex1/ani1.m
 ---
 class: inverse, left, top
 
+
 # Outline
-- Introduction
-- Animations with the glatos R package
-- Linear interpolation 
-- Non-linear interpolation
-- `gganimate` and `ggplot`
-- Getting help with `glatos`
+#### - Introduction
+#### - Animations with the glatos R package
+#### - Linear interpolation 
+#### - Non-linear interpolation
+#### - "gganimate" and "ggplot"
+#### - Getting help with glatos
 
 ---
 
