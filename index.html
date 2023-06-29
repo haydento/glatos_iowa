@@ -4,6 +4,8 @@
     <title>IOWA</title>
     <meta charset="utf-8" />
     <script src="index_files/header-attrs-2.22/header-attrs.js"></script>
+    <link href="index_files/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="index_files/panelset-0.2.6/panelset.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -48,7 +50,7 @@ class: inverse, left, top
 
 - Multi-dimensional (space, time, depth, ...), difficult to summarize with static plots
 - Intuitive
-- Exploratory 
+- Exploratory Data Analysis
 
 # BUT...
 
@@ -56,18 +58,14 @@ class: inverse, left, top
 - What next?  Animations are usually not the final analysis
 - Difficult to tease out patterns in large number of fish
 
-.center[
-## Interpolated positions = made up data!
-]
-
 ---
 
 # Step for creating animations
 
-1. Sort observations- fish and time
+1. Order observations by fish and time
 2. Bin detection timestamps
 3. Estimate position of each fish in each time bin (interpolate)
-4. Plot all fish in each bin (frame)
+4. Plot all fish in each bin
 5. Combine frames into animation
 
 .center[
@@ -102,7 +100,7 @@ class: inverse, left, top
 
 # Linear or non-linear interpolation?
 ### - Non-linear interpolation
- - requires spatial data
+ - Requires spatial data
  - `gdistance` package used to find non-linear paths
  - Polygon shoreline transition layer - a raster of "costs" for moving between adjacent cells.
   - Land is "high" cost and water is "low" cost.  `gdistance` finds the lowest cost path between locations within cost matrix.
@@ -200,6 +198,20 @@ make_frames(pos[1:100,], animate = TRUE, out_dir = myDir, ani_name = "ex1/ani1.m
 ]
 
 ---
+
+# Customize `make_frames`
+
+- Show receivers, change colors, symbols, timeline
+- Zoom (lat/lon limits) 
+- "Preview"
+- See `?make_frames` for lots of examples and customization options
+- Non-linear interpolation
+- St. Mary River
+- Sea Lamprey
+- Custom transition layer
+
+---
+
 class: inverse, left, top
 
 
@@ -215,8 +227,8 @@ class: inverse, left, top
 
 # Non-linear interpolation
 
-- Supply `transtion layer` to `trans` argument in `interpolate_path`
 - `interpolate_path` calculates the shortest path between each detection location that avoids impossible movements (i.e., land) for each fish
+- Supply `transtion layer` to `trans` argument in `interpolate_path`
  - If ratio of linear and non-linear distance is greater than `lnl_thresh` then non-linear solution is used
  - If ratio of linear and non-linear distance is less than `lnl_thresh` then linear solution is used 
     - Why `lnl_thresh`?  Saves time, non-linear is costly to calculate!
@@ -246,23 +258,11 @@ head(pos2)
 ## 5       153 2012-04-30 13:05:27 43.61570 -83.85883 interpolated
 ## 6       153 2012-05-01 13:05:27 43.64044 -83.84426 interpolated
 ```
----
-
-# Non-linear interpolation
-
-- Show receivers, change colors, symbols, timeline
-- Zoom (lat/lon limits) 
-- 1 slide "preview"
-- See `?make_frames` for lots of examples and customization options
-- Non-linear interpolation
-- St. Mary River
-- Sea Lamprey
-- Custom transition layer
 
 ---
 
-# Non-linear interpolation
-
+# Non-linear interpolation- extended example
+## load
 
 ```r
 # load GL shoreline polygon layer from glatos package
@@ -280,7 +280,12 @@ dir.create(myDir)
 ```
 ---
 
+
+---
 # Non-linear interpolation
+
+.panelset[
+.panel[.panel-name[Code]
 
 
 ```r
@@ -301,24 +306,22 @@ st_mary &lt;- st_crop(gl, xmin = -84.7, xmax = -83.57, ymin = 45.9, ymax = 47)
 # plot study area and detections
 ggplot() + geom_sf(data = st_mary, fill = "lightblue") + geom_sf(data = fish, colour = "red")
 ```
----
-# Non-linear interpolation
-
-.center[
-&lt;img src="index_files/figure-html/adv_2-1.png" style="width: 50%" /&gt;
 ]
 
-- Red detections and blue water 
+.panel[.panel-name[Plot]
+
+.center[
+&lt;img src="index_files/figure-html/adv_2-1.png" style="width: 30%" /&gt;
+]
+]
+]
 
 ---
 
-# Non-linear interpolation- make transition layer
+# Non-linear interpolation- make "transition layer"
 
-- `make_transition3` to make transition layer
-- Input is St. Mary polygon object
-- Output is raster grid
-- Start with resolution (size of pixels in degrees) x = 0.1, y = 0.1
-
+.panelset[
+.panel[.panel-name[Code]
 
 
 ```r
@@ -331,19 +334,22 @@ plot(st_geometry(st_mary), fill = "lightblue", add = TRUE)
 plot(st_geometry(fish), add = TRUE, col = "red", pch = 16)
 ```
 
----
+- Input is St. Mary polygon object
+- Output is raster grid
+- Start with resolution (size of pixels in degrees) x = 0.1, y = 0.1
+]
 
-# Non-linear interpolation- make transition layer
+.panel[.panel-name[Plot]
 
 .pull-left[
-
-&lt;img src="index_files/figure-html/adv_4-1.png" style="width: 70%" /&gt;
-
+&lt;img src="index_files/figure-html/adv_4-1.png" style="width: 30%" /&gt;
 ]
 
 .pull-right[
 - Transition layer is pixelated- increase resolution
 - Goal: continuous connections between each receiver
+]
+]
 ]
 
 ---
@@ -589,9 +595,10 @@ dem &lt;- dem %&gt;%
 
 
 ```r
-ani &lt;- ggplot() + geom_tile(data = dem, aes(x = x, y = y, fill = st_mary_bathy)) + geom_sf(data = st_mary, fill = NA) + theme_void() + geom_point(data = recs, aes(x = deploy_long, y = deploy_lat),
-    size = 2, color = "orange", inherit.aes = FALSE) + geom_point(data = pos[1:50, ], aes(x = longitude, y = latitude, group = animal_id, color = color), inherit.aes = FALSE, show.legend = FALSE) +
-    xlab("longitude") + ylab("latitude") + scale_color_manual(values = c("red", "blue")) + scale_size_manual(values = c(2, 1)) + xlim(-84.7, -83.57) + ylim(45.904, 47) + transition_manual(bin_timestamp) +
+ani &lt;- ggplot() + geom_tile(data = dem, aes(x = x, y = y, fill = st_mary_bathy)) + geom_sf(data = st_mary, fill = NA) + theme_void() + geom_point(data = recs,
+    aes(x = deploy_long, y = deploy_lat), size = 2, color = "orange", inherit.aes = FALSE) + geom_point(data = pos[1:50, ], aes(x = longitude,
+    y = latitude, group = animal_id, color = color), inherit.aes = FALSE, show.legend = FALSE) + xlab("longitude") + ylab("latitude") +
+    scale_color_manual(values = c("red", "blue")) + scale_size_manual(values = c(2, 1)) + xlim(-84.7, -83.57) + ylim(45.904, 47) + transition_manual(bin_timestamp) +
     ggtitle("{current_frame}")
 
 gganimate::animate(ani, duration = 30, renderer = av_renderer(file = file.path(myDir, "ex4.mp4")), detail = 2)
@@ -625,7 +632,6 @@ class: inverse, left, top
 # Questions
 #### email: thayden@usgs.gov
 #### View slides and code online:
-##### haydento.github.io/glatos_iowa#1
 ##### haydento.github.io/glatos_iowa
 
 .center[
