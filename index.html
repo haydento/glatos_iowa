@@ -14,6 +14,8 @@
 
 
 
+
+
 class: inverse, center, middle
 
 
@@ -300,7 +302,8 @@ if (dir.exists(myDir)) {
 dir.create(myDir)
 
 # make frames and create animation
-make_frames(pos2, animate = TRUE, out_dir = myDir, ani_name = "ex0.5/ani1.mp4", show_progress = FALSE, overwrite = TRUE, preview = FALSE, cex = pos2$size, col = pos2$color)
+make_frames(pos2, animate = TRUE, out_dir = myDir, ani_name = "ex0.5/ani1.mp4", show_progress = FALSE, overwrite = TRUE, preview = FALSE,
+    cex = pos2$size, col = pos2$color)
 ```
 
 ```
@@ -463,9 +466,10 @@ recs &lt;- read_glatos_receivers(rec_file)
 myDir &lt;- file.path(myDir, "frames")
 dir.create(myDir)
 
-# set background limits to same extents as used when St. Mary's was cropped above. See ?make_frames for more help on arguments in 'make_frames'
-make_frames(pos[1:50, ], recs = recs, background_ylim = c(45.904, 47), background_xlim = c(-84.7, -83.57), out_dir = myDir, animate = TRUE, preview = FALSE, tail_dur = 0, ani_name = "ani2.mp4",
-    overwrite = TRUE, show_progress = FALSE)
+# set background limits to same extents as used when St. Mary's was cropped above. See ?make_frames for more help on arguments in
+# 'make_frames'
+make_frames(pos[1:50, ], recs = recs, background_ylim = c(45.904, 47), background_xlim = c(-84.7, -83.57), out_dir = myDir, animate = TRUE,
+    preview = FALSE, tail_dur = 0, ani_name = "ani2.mp4", overwrite = TRUE, show_progress = FALSE)
 ```
 ]
 
@@ -725,9 +729,10 @@ dem &lt;- dem %&gt;%
 
 
 ```r
-ani &lt;- ggplot() + geom_tile(data = dem, aes(x = x, y = y, fill = st_mary_bathy)) + geom_sf(data = st_mary, fill = NA) + theme_void() + geom_point(data = recs, aes(x = deploy_long, y = deploy_lat),
-    size = 2, color = "orange", inherit.aes = FALSE) + geom_point(data = pos[1:50, ], aes(x = longitude, y = latitude, group = animal_id, color = color), inherit.aes = FALSE, show.legend = FALSE) +
-    xlab("longitude") + ylab("latitude") + scale_color_manual(values = c("red", "blue")) + scale_size_manual(values = c(2, 1)) + xlim(-84.7, -83.57) + ylim(45.904, 47) + transition_manual(bin_timestamp) +
+ani &lt;- ggplot() + geom_tile(data = dem, aes(x = x, y = y, fill = st_mary_bathy)) + geom_sf(data = st_mary, fill = NA) + theme_void() + geom_point(data = recs,
+    aes(x = deploy_long, y = deploy_lat), size = 2, color = "orange", inherit.aes = FALSE) + geom_point(data = pos[1:50, ], aes(x = longitude,
+    y = latitude, group = animal_id, color = color), inherit.aes = FALSE, show.legend = FALSE) + xlab("longitude") + ylab("latitude") +
+    scale_color_manual(values = c("red", "blue")) + scale_size_manual(values = c(2, 1)) + xlim(-84.7, -83.57) + ylim(45.904, 47) + transition_manual(bin_timestamp) +
     ggtitle("{current_frame}")
 
 gganimate::animate(ani, duration = 30, renderer = av_renderer(file = file.path(myDir, "ex4.mp4")), detail = 2)
