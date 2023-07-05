@@ -48,5 +48,5 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# Image files
-*.jpg
+# Image "frames" folders
+frames/
