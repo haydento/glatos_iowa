@@ -3,10 +3,12 @@
   <head>
     <title>IOWA</title>
     <meta charset="utf-8" />
-    <script src="index_files/header-attrs-2.22/header-attrs.js"></script>
+    <script src="index_files/header-attrs-2.23/header-attrs.js"></script>
     <link href="index_files/panelset-0.2.6/panelset.css" rel="stylesheet" />
     <script src="index_files/panelset-0.2.6/panelset.js"></script>
     <script src="index_files/xaringanExtra_fit-screen-0.2.6/fit-screen.js"></script>
+    <script src="index_files/kePrint-0.0.1/kePrint.js"></script>
+    <link href="index_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -81,7 +83,7 @@ class: inverse, left, top
 - `interpolate_path` - interpolates location to equal time bins
  - Linear - includes impossible movements, "connect-the-dots" 
  - Non-linear - avoids land
-- `make_transition3`
+- `make_transition3` - makes transition layer ("cost" for moving between cells)
 
 - `make_frames` - plots frames and optionally stitches them together
 
@@ -111,7 +113,6 @@ class: inverse, left, top
    - `gdistance`
  - Additional spatial data needed
    - Polygon shoreline 
-   - More steps
 ]
 
 ---
@@ -121,7 +122,7 @@ class: inverse, left, top
 # Outline
 #### - Introduction
 #### - Animations with the glatos R package
-#### - Linear interpolation 
+#### &lt;span style="color:red"&gt;- Linear interpolation&lt;/span&gt; 
 #### - Non-linear interpolation
 #### - "gganimate" and "ggplot"
 #### - Getting help with glatos
@@ -158,16 +159,54 @@ pos &lt;- interpolate_path(dtc, trans=NULL, int_time_stamp=172800)
 
 .panel[.panel-name[Table]
 
-
-```
-##   animal_id       bin_timestamp latitude longitude  record_type
-## 1       153 2012-04-28 13:05:27 43.39165 -83.99264    detection
-## 2       153 2012-04-28 13:05:27 43.38709 -83.98737    detection
-## 3       153 2012-04-28 13:05:27 43.60963 -83.88658    detection
-## 4       153 2012-04-28 13:05:27 43.61235 -83.86080    detection
-## 5       153 2012-04-30 13:05:27 43.61570 -83.85883 interpolated
-## 6       153 2012-05-02 13:05:27 43.66517 -83.82969 interpolated
-```
+&lt;table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; animal_id &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; bin_timestamp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; latitude &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; longitude &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; record_type &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2012-04-28 13:05:27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43.39165 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -83.99264 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; detection &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2012-04-28 13:05:27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43.38709 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -83.98737 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; detection &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2012-04-28 13:05:27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43.60963 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -83.88658 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; detection &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2012-04-28 13:05:27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43.61235 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -83.86080 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; detection &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2012-04-30 13:05:27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43.61570 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -83.85883 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; interpolated &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 - `animal_id` - fish identification code
 - `bin_timestamp` - is the equally spaced time bins for coordinates 
@@ -194,8 +233,8 @@ output &lt;- file.path(myDir, "frames")
 dir.create(output)
 
 # make frames and create animation
-make_frames(pos[1:100,], animate = TRUE, out_dir = output, ani_name = file.path(myDir, "ani1.mp4"),
-            show_progress = FALSE, overwrite = TRUE, preview = FALSE)
+make_frames(pos, animate=TRUE, out_dir=output, ani_name=file.path(myDir, "ani1.mp4"),
+            show_progress=FALSE, overwrite=TRUE, preview=FALSE)
 ```
 ]
 
@@ -212,7 +251,7 @@ make_frames(pos[1:100,], animate = TRUE, out_dir = output, ani_name = file.path(
 ---
 
 # Saginaw Bay walleye
-#### Customization supported
+#### Customize animation
 
 ### `?make_frames`
 
@@ -230,7 +269,7 @@ class: inverse, left, top
 #### - Introduction
 #### - Animations with the glatos R package
 #### - Linear interpolation 
-#### - Non-linear interpolation
+#### - &lt;span style="color:red"&gt;Non-linear interpolation&lt;/span&gt;
 #### - "gganimate" and "ggplot"
 #### - Getting help with glatos
 
@@ -440,7 +479,6 @@ plot(st_geometry(fish), add = TRUE, col = "red", pch = 16)
 
 ```r
 # Interpolate
-
 pos &lt;- interpolate_path(det, trans=tran1$transition, int_time_stamp=3600*3, show_progress=FALSE)
 
 # load receiver location data
@@ -449,8 +487,8 @@ recs &lt;- read_glatos_receivers(rec_file)
 
 
 # set background limits to same extents as used when St. Mary's was cropped above.
-# See ?make_frames for more help on arguments in "make_frames"
-make_frames(pos[1:50,], recs=recs, background_ylim=c(45.904, 47), background_xlim=c(-84.7, -83.57),
+# See ?make_frames for more help
+make_frames(pos, recs=recs, background_ylim=c(45.904, 47), background_xlim=c(-84.7, -83.57),
             out_dir=output, ani_name=file.path(myDir, "ani2.mp4"), overwrite=TRUE, show_progress=FALSE)
 ```
 ]
@@ -597,7 +635,7 @@ layout: false
 
 
 ```r
-for(i in 1:50){
+for(i in 1:nrow(pos)){
   # select all fish detections and receivers deployed in ith bin
   pos_i &lt;- pos[pos$bin_timestamp == t_seq[i], ]
   recs_i &lt;- recs[recs$deploy_date_time &lt;= t_seq[i] &amp; recs$recover_date_time &gt;= t_seq[i], ]
@@ -656,7 +694,7 @@ class: inverse, left, top
 #### - Animations with the glatos R package
 #### - Linear interpolation 
 #### - Non-linear interpolation
-#### - "gganimate" and "ggplot"
+#### - &lt;span style="color:red"&gt;"gganimate" and "ggplot"&lt;/span&gt;
 #### - Getting help with glatos
 
 ---
@@ -754,7 +792,7 @@ class: inverse, left, top
 #### - Linear interpolation 
 #### - Non-linear interpolation
 #### - "gganimate" and "ggplot"
-#### - Getting help with glatos
+#### &lt;span style="color:red"&gt;- Getting help with glatos&lt;/span&gt;
 
 ---
 

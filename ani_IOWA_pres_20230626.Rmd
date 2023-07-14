@@ -95,7 +95,7 @@ class: inverse, left, top
 - `interpolate_path` - interpolates location to equal time bins
  - Linear - includes impossible movements, "connect-the-dots" 
  - Non-linear - avoids land
-- `make_transition3`
+- `make_transition3` - makes transition layer ("cost" for moving between cells)
 
 - `make_frames` - plots frames and optionally stitches them together
 
@@ -125,7 +125,6 @@ class: inverse, left, top
    - `gdistance`
  - Additional spatial data needed
    - Polygon shoreline 
-   - More steps
 ]
 
 ---
@@ -135,7 +134,7 @@ class: inverse, left, top
 # Outline
 #### - Introduction
 #### - Animations with the glatos R package
-#### - Linear interpolation 
+#### <span style="color:red">- Linear interpolation</span> 
 #### - Non-linear interpolation
 #### - "gganimate" and "ggplot"
 #### - Getting help with glatos
@@ -174,7 +173,8 @@ pos <- interpolate_path(dtc, trans=NULL, int_time_stamp=172800)
 
 ```{r linear_2, echo=FALSE, eval = TRUE}
 
-head(pos)
+kableExtra::kbl(pos[1:5,], align="c") %>%
+  kableExtra::kable_styling(bootstrap_options=c("striped", "hover", "condensed"), font_size=12, position="center", full_width=TRUE) 
 
 ```
 
@@ -203,8 +203,8 @@ output <- file.path(myDir, "frames")
 dir.create(output)
 
 # make frames and create animation
-make_frames(pos[1:100,], animate = TRUE, out_dir = output, ani_name = file.path(myDir, "ani1.mp4"),
-            show_progress = FALSE, overwrite = TRUE, preview = FALSE)
+make_frames(pos, animate=TRUE, out_dir=output, ani_name=file.path(myDir, "ani1.mp4"),
+            show_progress=FALSE, overwrite=TRUE, preview=FALSE)
 
 ```
 ]
@@ -222,7 +222,7 @@ make_frames(pos[1:100,], animate = TRUE, out_dir = output, ani_name = file.path(
 ---
 
 # Saginaw Bay walleye
-#### Customization supported
+#### Customize animation
 
 ### `?make_frames`
 
@@ -240,7 +240,7 @@ class: inverse, left, top
 #### - Introduction
 #### - Animations with the glatos R package
 #### - Linear interpolation 
-#### - Non-linear interpolation
+#### - <span style="color:red">Non-linear interpolation</span>
 #### - "gganimate" and "ggplot"
 #### - Getting help with glatos
 
@@ -446,7 +446,6 @@ plot(st_geometry(fish), add = TRUE, col = "red", pch = 16)
 ```{r adv_7, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE, eval=TRUE, tidy=FALSE}
      
 # Interpolate
-
 pos <- interpolate_path(det, trans=tran1$transition, int_time_stamp=3600*3, show_progress=FALSE)
 
 # load receiver location data
@@ -455,8 +454,8 @@ recs <- read_glatos_receivers(rec_file)
 
 
 # set background limits to same extents as used when St. Mary's was cropped above.
-# See ?make_frames for more help on arguments in "make_frames"
-make_frames(pos[1:50,], recs=recs, background_ylim=c(45.904, 47), background_xlim=c(-84.7, -83.57),
+# See ?make_frames for more help
+make_frames(pos, recs=recs, background_ylim=c(45.904, 47), background_xlim=c(-84.7, -83.57),
             out_dir=output, ani_name=file.path(myDir, "ani2.mp4"), overwrite=TRUE, show_progress=FALSE)
 
 ```
@@ -583,7 +582,7 @@ layout: false
 
 ```{r bathy5, cache = FALSE, eval=TRUE, warning=FALSE, tidy=FALSE, message=FALSE}
 
-for(i in 1:50){
+for(i in 1:nrow(pos)){
   # select all fish detections and receivers deployed in ith bin
   pos_i <- pos[pos$bin_timestamp == t_seq[i], ]
   recs_i <- recs[recs$deploy_date_time <= t_seq[i] & recs$recover_date_time >= t_seq[i], ]
@@ -638,7 +637,7 @@ class: inverse, left, top
 #### - Animations with the glatos R package
 #### - Linear interpolation 
 #### - Non-linear interpolation
-#### - "gganimate" and "ggplot"
+#### - <span style="color:red">"gganimate" and "ggplot"</span>
 #### - Getting help with glatos
 
 ---
@@ -731,7 +730,7 @@ class: inverse, left, top
 #### - Linear interpolation 
 #### - Non-linear interpolation
 #### - "gganimate" and "ggplot"
-#### - Getting help with glatos
+#### <span style="color:red">- Getting help with glatos</span>
 
 ---
 
